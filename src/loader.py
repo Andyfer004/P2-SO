@@ -1,21 +1,29 @@
 def load_processes_from_lines(lines):
-    print(f"[DEBUG] Líneas leídas: {lines}")
     procs = []
     for i, line in enumerate(lines, 1):
         parts = [x.strip() for x in line.split(',')]
         if len(parts) != 4:
-            raise ValueError(f"Línea {i}: formato inválido en processes.txt")
+            raise ValueError(f"[processes.txt] Línea {i} mal formada (esperado: PID, BT, AT, PRIORIDAD): {line}")
+
         pid, bt, at, prio = parts
+
+        # Validación de enteros
+        try:
+            bt = int(bt)
+            at = int(at)
+            prio = int(prio)
+        except ValueError:
+            raise ValueError(f"[processes.txt] Línea {i}: BT, AT y PRIORIDAD deben ser números enteros. Línea: {line}")
+
         procs.append({
             'pid': pid,
-            'bt': int(bt),
-            'at': int(at),
-            'prio': int(prio),
-            'remaining': int(bt),
+            'bt': bt,
+            'at': at,
+            'prio': prio,
+            'remaining': bt,
             'completed': False,
             'finish': None
         })
-    print(f"[DEBUG] Procesos cargados: {procs}")
     return procs
 
 def load_resources_from_lines(lines):
